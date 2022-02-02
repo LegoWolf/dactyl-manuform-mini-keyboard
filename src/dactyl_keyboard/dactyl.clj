@@ -26,13 +26,13 @@
 (def pinky-15u true)
 
 (defn column-offset [column] (cond
-                               (= column 2) [0 2.82 -4.5]
+                               (= column 2) [0 2.82 -2.5]
                                (>= column 4) [0 -12 5.64]            ; original [0 -5.8 5.64]
                                :else [0 0 0]))
 
-(def thumb-offsets [6 -3 7])
+(def thumb-offsets [6 -1 7])
 
-(def keyboard-z-offset 9)               ; controls overall height; original=9 with centercol=3; use 16 for centercol=2
+(def keyboard-z-offset 11)               ; controls overall height; original=9 with centercol=3; use 16 for centercol=2
 
 (def extra-width 2.5)                   ; extra space between the base of keys; original= 2
 (def extra-height 1.0)                  ; original= 0.5
