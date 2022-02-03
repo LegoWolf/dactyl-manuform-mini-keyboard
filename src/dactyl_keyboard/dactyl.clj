@@ -395,10 +395,11 @@
 
 ; David's modification: these are extruded versions of the thumb-post-* primitives. We use them for thumb-tr-place
 ; throughout to thicken the problematically thin walls around it, which are caused by especially acute angles.
-(def thumb-post-tr-outer (union thumb-post-tr (translate [1 1 0] thumb-post-tr)))
-(def thumb-post-tl-outer (union thumb-post-tl (translate [-1 1 0] thumb-post-tl)))
-(def thumb-post-bl-outer (union thumb-post-bl (translate [-1 -1 0] thumb-post-bl)))
-(def thumb-post-br-outer (union thumb-post-br (translate [1 -1 0] thumb-post-br)))
+(def outer-extra-width 1)
+(def thumb-post-tr-outer (union thumb-post-tr (translate [   outer-extra-width     outer-extra-width  0] thumb-post-tr)))
+(def thumb-post-tl-outer (union thumb-post-tl (translate [(- outer-extra-width)    outer-extra-width  0] thumb-post-tl)))
+(def thumb-post-bl-outer (union thumb-post-bl (translate [(- outer-extra-width) (- outer-extra-width) 0] thumb-post-bl)))
+(def thumb-post-br-outer (union thumb-post-br (translate [   outer-extra-width  (- outer-extra-width) 0] thumb-post-br)))
 
 (def thumb-connectors
   (union
