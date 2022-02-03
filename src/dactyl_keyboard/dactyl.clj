@@ -393,18 +393,20 @@
 (def thumb-post-bl (translate [(+ (/ mount-width -2) post-adj) (+ (/ mount-height -2) post-adj) 0] web-post))
 (def thumb-post-br (translate [(- (/ mount-width 2) post-adj)  (+ (/ mount-height -2) post-adj) 0] web-post))
 
-(def thumb-post-tr-outer (translate [1 1 0] thumb-post-tr))
-(def thumb-post-tl-outer (translate [-1 1 0] thumb-post-tl))
-(def thumb-post-br-outer (translate [1 0 0] thumb-post-br))
-
+; David's modification: these are extruded versions of the thumb-post-* primitives. We use them for thumb-tr-place
+; throughout to thicken the problematically thin walls around it, which are caused by especially acute angles.
+(def thumb-post-tr-outer (union thumb-post-tr (translate [1 1 0] thumb-post-tr)))
+(def thumb-post-tl-outer (union thumb-post-tl (translate [-1 1 0] thumb-post-tl)))
+(def thumb-post-bl-outer (union thumb-post-bl (translate [-1 -1 0] thumb-post-bl)))
+(def thumb-post-br-outer (union thumb-post-br (translate [1 -1 0] thumb-post-br)))
 
 (def thumb-connectors
   (union
    (triangle-hulls    ; top two
     (thumb-tl-place web-post-tr)
     (thumb-tl-place web-post-br)
-    (thumb-tr-place thumb-post-tl)
-    (thumb-tr-place thumb-post-bl))
+    (thumb-tr-place thumb-post-tl-outer)
+    (thumb-tr-place thumb-post-bl-outer))
    (triangle-hulls    ; bottom two
     (thumb-br-place web-post-tr)
     (thumb-br-place web-post-br)
@@ -413,7 +415,7 @@
    (triangle-hulls
     (thumb-mr-place web-post-tr)
     (thumb-mr-place web-post-br)
-    (thumb-tr-place thumb-post-br))
+    (thumb-tr-place thumb-post-br-outer))
    (triangle-hulls    ; between top row and bottom row
     (thumb-br-place web-post-tl)
     (thumb-bl-place web-post-bl)
@@ -423,9 +425,9 @@
     (thumb-tl-place web-post-bl)
     (thumb-mr-place web-post-tr)
     (thumb-tl-place web-post-br)
-    (thumb-tr-place web-post-bl)
+    (thumb-tr-place thumb-post-bl-outer)
     (thumb-mr-place web-post-tr)
-    (thumb-tr-place web-post-br))
+    (thumb-tr-place thumb-post-br-outer))
    (triangle-hulls    ; top two to the middle two, starting on the left
     (thumb-tl-place web-post-tl)
     (thumb-bl-place web-post-tr)
@@ -440,7 +442,7 @@
     (key-place 0 cornerrow web-post-bl)
     (thumb-tl-place web-post-tr)
     (key-place 0 cornerrow web-post-br)
-    (thumb-tr-place thumb-post-tl)
+    (thumb-tr-place thumb-post-tl-outer)
     (key-place 1 cornerrow web-post-bl)
     (thumb-tr-place thumb-post-tr-outer)
     (key-place 1 cornerrow web-post-br)
@@ -448,7 +450,7 @@
     (key-place 2 lastrow web-post-bl)
     (thumb-tr-place thumb-post-tr-outer)
     (key-place 2 lastrow web-post-bl)
-    (thumb-tr-place thumb-post-br)
+    (thumb-tr-place thumb-post-br-outer)
     (key-place 2 lastrow web-post-br)
     (key-place 3 lastrow web-post-bl)
     (key-place 2 lastrow web-post-tr)
@@ -468,20 +470,7 @@
     (key-place 3 lastrow web-post-tr)
     (key-place 3 lastrow web-post-br)
     (key-place 3 lastrow web-post-tr)
-    (key-place 4 cornerrow web-post-bl))
-   (hull ; thick walls around the thinnest part of the thumb wall
-    (thumb-tr-place thumb-post-tr)
-    (thumb-tr-place thumb-post-tr-outer)
-    (thumb-tr-place thumb-post-tl)
-    (key-place 1 cornerrow web-post-bl)
-    (key-place 1 cornerrow web-post-br))
-   (hull ; thick walls around the thinnest part of the thumb wall
-    (thumb-tr-place thumb-post-tr)
-    (thumb-tr-place thumb-post-br)
-    (thumb-tr-place thumb-post-tr-outer)
-    (key-place 1 cornerrow web-post-br)
-    (key-place 2 lastrow web-post-bl)
-    (key-place 2 lastrow web-post-tl))))
+    (key-place 4 cornerrow web-post-bl))))
 
 ;;;;;;;;;;
 ;; Case ;;
@@ -563,7 +552,7 @@
    (for [x (range 4 ncols)] (key-wall-brace x cornerrow 0 -1 web-post-bl x       cornerrow 0 -1 web-post-br)) ; TODO fix extra wall
    (for [x (range 5 ncols)] (key-wall-brace x cornerrow 0 -1 web-post-bl (dec x) cornerrow 0 -1 web-post-br))
    ; thumb walls
-   (wall-brace thumb-mr-place  0 -1 web-post-br thumb-tr-place  0 -1 thumb-post-br)
+   (wall-brace thumb-mr-place  0 -1 web-post-br thumb-tr-place  0 -1 thumb-post-br-outer)
    (wall-brace thumb-mr-place  0 -1 web-post-br thumb-mr-place  0 -1 web-post-bl)
    (wall-brace thumb-br-place  0 -1 web-post-br thumb-br-place  0 -1 web-post-bl)
    (wall-brace thumb-bl-place  0  1 web-post-tr thumb-bl-place  0  1 web-post-tl)
@@ -575,7 +564,7 @@
    ; thumb tweeners
    (wall-brace thumb-mr-place  0 -1 web-post-bl thumb-br-place  0 -1 web-post-br)
    (wall-brace thumb-bl-place -1  0 web-post-bl thumb-br-place -1  0 web-post-tl)
-   (wall-brace thumb-tr-place  0 -1 thumb-post-br (partial key-place 3 lastrow)  0 -1 web-post-bl)
+   (wall-brace thumb-tr-place  0 -1 thumb-post-br-outer (partial key-place 3 lastrow)  0 -1 web-post-bl)
    ; clunky bit on the top left thumb connection  (normal connectors don't work well)
    (bottom-hull
     (left-key-place cornerrow -1 (translate (wall-locate2 -1 0) web-post))
