@@ -251,7 +251,7 @@
 ;; Web Connectors ;;
 ;;;;;;;;;;;;;;;;;;;;
 
-(def web-thickness 3)
+(def web-thickness 2)
 (def post-size 0.1)
 (def web-post (->> (cube post-size post-size web-thickness)
                    (translate [0 0 (+ (/ web-thickness -2)
@@ -262,6 +262,7 @@
 (def web-post-tl (translate [(+ (/ mount-width -2) post-adj) (- (/ mount-height 2) post-adj) 0] web-post))
 (def web-post-bl (translate [(+ (/ mount-width -2) post-adj) (+ (/ mount-height -2) post-adj) 0] web-post))
 (def web-post-br (translate [(- (/ mount-width 2) post-adj) (+ (/ mount-height -2) post-adj) 0] web-post))
+
 
 ; wide posts for 1.5u keys in the main cluster
 
@@ -392,6 +393,11 @@
 (def thumb-post-bl (translate [(+ (/ mount-width -2) post-adj) (+ (/ mount-height -2) post-adj) 0] web-post))
 (def thumb-post-br (translate [(- (/ mount-width 2) post-adj)  (+ (/ mount-height -2) post-adj) 0] web-post))
 
+(def thumb-post-tr-outer (translate [1 1 0] thumb-post-tr))
+(def thumb-post-tl-outer (translate [-1 1 0] thumb-post-tl))
+(def thumb-post-br-outer (translate [1 0 0] thumb-post-br))
+
+
 (def thumb-connectors
   (union
    (triangle-hulls    ; top two
@@ -436,11 +442,11 @@
     (key-place 0 cornerrow web-post-br)
     (thumb-tr-place thumb-post-tl)
     (key-place 1 cornerrow web-post-bl)
-    (thumb-tr-place thumb-post-tr)
+    (thumb-tr-place thumb-post-tr-outer)
     (key-place 1 cornerrow web-post-br)
     (key-place 2 lastrow web-post-tl)
     (key-place 2 lastrow web-post-bl)
-    (thumb-tr-place thumb-post-tr)
+    (thumb-tr-place thumb-post-tr-outer)
     (key-place 2 lastrow web-post-bl)
     (thumb-tr-place thumb-post-br)
     (key-place 2 lastrow web-post-br)
@@ -462,7 +468,20 @@
     (key-place 3 lastrow web-post-tr)
     (key-place 3 lastrow web-post-br)
     (key-place 3 lastrow web-post-tr)
-    (key-place 4 cornerrow web-post-bl))))
+    (key-place 4 cornerrow web-post-bl))
+   (hull ; thick walls around the thinnest part of the thumb wall
+    (thumb-tr-place thumb-post-tr)
+    (thumb-tr-place thumb-post-tr-outer)
+    (thumb-tr-place thumb-post-tl)
+    (key-place 1 cornerrow web-post-bl)
+    (key-place 1 cornerrow web-post-br))
+   (hull ; thick walls around the thinnest part of the thumb wall
+    (thumb-tr-place thumb-post-tr)
+    (thumb-tr-place thumb-post-br)
+    (thumb-tr-place thumb-post-tr-outer)
+    (key-place 1 cornerrow web-post-br)
+    (key-place 2 lastrow web-post-bl)
+    (key-place 2 lastrow web-post-tl))))
 
 ;;;;;;;;;;
 ;; Case ;;
