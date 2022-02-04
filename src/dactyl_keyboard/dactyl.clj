@@ -603,7 +603,7 @@
 (def usb-holder-space  (translate (map + usb-holder-position [0 (* -1 wall-thickness) 1]) usb-holder-cube))
 (def usb-holder-holder (translate usb-holder-position (cube 19 12 4)))
 
-(def usb-jack (translate (map + usb-holder-position [0 10 3]) (cube 8.1 20 3.1)))
+(def usb-jack (translate (map + usb-holder-position [0 10 3]) (cube 10 20 4)))
 
 (def pro-micro-position (map + (key-position 0 1 (wall-locate3 -1 0)) [-6 2 -15]))
 (def pro-micro-space-size [4 10 12]) ; z has no wall;
@@ -632,7 +632,7 @@
 
   ; circle trrs hole
    (->>
-    (->> (binding [*fn* 30] (cylinder 2.55 20))) ; 5mm trrs jack
+    (->> (binding [*fn* 30] (cylinder 2.75 20))) ; 5mm trrs jack
     (rotate (deg2rad  90) [1 0 0])
     (translate [(first trrs-holder-position) (+ (second trrs-holder-position) (/ (+ (second trrs-holder-size) trrs-holder-thickness) 2)) (+ 3 (/ (+ (last trrs-holder-size) trrs-holder-thickness) 2))])) ;1.5 padding
 
@@ -667,11 +667,11 @@
          (screw-insert 1 lastrow         bottom-radius top-radius height [0 -16 0])))
 
 ; Hole Depth Y: 4.4
-(def screw-insert-height 4)
+(def screw-insert-height 7)
 
 ; Hole Diameter C: 4.1-4.4
-(def screw-insert-bottom-radius (/ 4.4 2))
-(def screw-insert-top-radius (/ 4.4 2))
+(def screw-insert-bottom-radius (/ 5.3 2))
+(def screw-insert-top-radius (/ 5.3 2))
 (def screw-insert-holes  (screw-insert-all-shapes screw-insert-bottom-radius screw-insert-top-radius screw-insert-height))
 
 ; Wall Thickness W:\t1.65
