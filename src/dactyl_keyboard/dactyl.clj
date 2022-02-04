@@ -619,7 +619,7 @@
    pro-micro-space))
 
 (def trrs-holder-size [6.2 10 2]) ; trrs jack PJ-320A
-(def trrs-holder-hole-size [6.2 10 6]) ; trrs jack PJ-320A
+(def trrs-holder-hole-size [8.75 10 20]) ; trrs jack PJ-320A
 (def trrs-holder-position  (map + usb-holder-position [-18.6 0 0]))
 (def trrs-holder-thickness 2)
 (def trrs-holder-thickness-2x (* 2 trrs-holder-thickness))
@@ -637,7 +637,9 @@
     (translate [(first trrs-holder-position) (+ (second trrs-holder-position) (/ (+ (second trrs-holder-size) trrs-holder-thickness) 2)) (+ 3 (/ (+ (last trrs-holder-size) trrs-holder-thickness) 2))])) ;1.5 padding
 
   ; rectangular trrs holder
-   (->> (apply cube trrs-holder-hole-size) (translate [(first trrs-holder-position) (+ (/ trrs-holder-thickness -2) (second trrs-holder-position)) (+ (/ (last trrs-holder-hole-size) 2) trrs-holder-thickness)]))))
+  (->> (apply cube trrs-holder-hole-size) 
+  		(translate [(+ 1.25 (first trrs-holder-position)) (+ (/ trrs-holder-thickness -2) (second trrs-holder-position)) (- (+ (/ (last trrs-holder-hole-size) 2) trrs-holder-thickness) 2)])
+  		)))
 
 (defn screw-insert-shape [bottom-radius top-radius height]
   (union
