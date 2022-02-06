@@ -37,6 +37,5 @@ Build log: https://www.beekeeb.com/dactyl-manuform-mini-mechanical-keyboard-buil
 
 ## TODO
 
-* Increase case height by 1mm.
 * Reduce USB-C port by 0.5mm.
 * Add holder trays.
