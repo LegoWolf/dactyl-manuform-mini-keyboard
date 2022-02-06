@@ -598,7 +598,7 @@
 
 (def usb-holder-ref (key-position 0 0 (map - (wall-locate2  0  -1) [0 (/ mount-height 2) 0])))
 
-(def usb-holder-position (map + [22 19.3 0] [(first usb-holder-ref) (second usb-holder-ref) 2]))
+(def usb-holder-position (map + [22 19.3 0] [(first usb-holder-ref) (second usb-holder-ref) 3]))
 (def usb-holder-cube   (cube 26 12 2))
 (def usb-holder-space  (translate (map + usb-holder-position [0 (* -1 wall-thickness) 1]) usb-holder-cube))
 (def usb-holder-holder (translate usb-holder-position (cube 19 12 4)))
@@ -620,8 +620,8 @@
 
 (def trrs-holder-size [6.2 10 2]) ; trrs jack PJ-320A
 (def trrs-holder-hole-size [8.75 10 20]) ; trrs jack PJ-320A
-(def trrs-holder-position-left (map + usb-holder-position [-18.6 0 0]))
-(def trrs-holder-position-right (map + usb-holder-position [-15.6 0 0]))
+(def trrs-holder-position-left (map + usb-holder-position [-18.6 0 -2]))
+(def trrs-holder-position-right (map + usb-holder-position [-15.6 0 -2]))
 (def trrs-holder-position-shift [1.25 0 -2])
 (def trrs-holder-thickness 2)
 (def trrs-holder-thickness-2x (* 2 trrs-holder-thickness))
@@ -629,7 +629,7 @@
 		(union
 				(->>
 						(cube (+ (first trrs-holder-size) trrs-holder-thickness-2x) (+ trrs-holder-thickness (second trrs-holder-size)) (+ (last trrs-holder-size) trrs-holder-thickness))
-						(translate [(first position) (second position) (/ (+ (last trrs-holder-size) trrs-holder-thickness) 2)]))))
+						(translate [(first position) (second position) (+ (last position) (/ (+ (last trrs-holder-size) trrs-holder-thickness) 2))]))))
 (defn trrs-holder-hole [position mirror?]
 		(union
 				; circle trrs hole
@@ -637,12 +637,12 @@
 						(->> (binding [*fn* 30] (cylinder 2.75 20))) ; 5mm trrs jack
 						(rotate (deg2rad 90) [1 0 0])
 						((fn [x] (if mirror? (mirror [-1 0 0] x) x)))
-						(translate [(first position) (+ (second position) (/ (+ (second trrs-holder-size) trrs-holder-thickness) 2)) (+ 3 (/ (+ (last trrs-holder-size) trrs-holder-thickness) 2))])) ;1.5 padding
+						(translate [(first position) (+ (second position) (/ (+ (second trrs-holder-size) trrs-holder-thickness) 2)) (+ 3 (last position) (/ (+ (last trrs-holder-size) trrs-holder-thickness) 2))])) ;1.5 padding
 				; rectangular trrs holder
 				(->> (apply cube trrs-holder-hole-size)
 						(translate trrs-holder-position-shift)
 						((fn [x] (if mirror? (mirror [-1 0 0] x) x)))
-						(translate [(first position) (+ (/ trrs-holder-thickness -2) (second position)) (+ (/ (last trrs-holder-hole-size) 2) trrs-holder-thickness)]))))
+						(translate [(first position) (+ (/ trrs-holder-thickness -2) (second position)) (+ (last position) (/ (last trrs-holder-hole-size) 2) trrs-holder-thickness)]))))
 (def trrs-holder-hole-left (trrs-holder-hole trrs-holder-position-left false))
 (def trrs-holder-hole-right (trrs-holder-hole trrs-holder-position-right true))
 (def trrs-holder-left (trrs-holder trrs-holder-position-left))
