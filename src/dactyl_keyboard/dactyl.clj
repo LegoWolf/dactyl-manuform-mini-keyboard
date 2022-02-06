@@ -602,7 +602,7 @@
 		; hole for the jack
 		(translate (map + usb-hole-position [0 10 3]) (cube 9.5 20 4))
 		; groove for the board
-		(translate (map + usb-hole-position [0 (- 0 wall-thickness 1) 1]) (cube 26 13 2.1))))
+		(translate (map + usb-hole-position [0 (- 0 wall-thickness 0.5) 1]) (cube 26 13 2.1))))
 (def usb-holder (translate (map + [0 (- 0 wall-thickness 2) -0.5] usb-hole-position) (cube 8 15.5 5)))
 
 (def pro-micro-position (map + (key-position 0 1 (wall-locate3 -1 0)) [-6 2 -15]))
