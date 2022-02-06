@@ -33,8 +33,4 @@ Build log: https://www.beekeeb.com/dactyl-manuform-mini-mechanical-keyboard-buil
 * Make changes to design, repeat `load-file`, OpenSCAD will watch for changes and rerender.
 * When done, use OpenSCAD to export STL files
 
-
-
 ## TODO
-
-* Add holder trays.

@@ -596,14 +596,14 @@
     (thumb-bl-place (translate (wall-locate3 -0.3 1) web-post-tr))
     (thumb-tl-place web-post-tl))))
 
-(def usb-holder-ref (key-position 0 0 (map - (wall-locate2  0  -1) [0 (/ mount-height 2) 0])))
-
-(def usb-holder-position (map + [22 19.3 0] [(first usb-holder-ref) (second usb-holder-ref) 3]))
-(def usb-holder-cube   (cube 26 12 2))
-(def usb-holder-space  (translate (map + usb-holder-position [0 (* -1 wall-thickness) 1]) usb-holder-cube))
-(def usb-holder-holder (translate usb-holder-position (cube 19 12 4)))
-
-(def usb-jack (translate (map + usb-holder-position [0 10 3]) (cube 9.5 20 4)))
+(def usb-hole-ref (key-position 0 0 (map - (wall-locate2  0  -1) [0 (/ mount-height 2) 0])))
+(def usb-hole-position (map + [22 19.3 0] [(first usb-hole-ref) (second usb-hole-ref) 3]))
+(def usb-hole (union
+		; hole for the jack
+		(translate (map + usb-hole-position [0 10 3]) (cube 9.5 20 4))
+		; groove for the board
+		(translate (map + usb-hole-position [0 (- 0 wall-thickness 1) 1]) (cube 26 13 2.1))))
+(def usb-holder (translate (map + [0 (- 0 wall-thickness 2) -0.5] usb-hole-position) (cube 8 15.5 5)))
 
 (def pro-micro-position (map + (key-position 0 1 (wall-locate3 -1 0)) [-6 2 -15]))
 (def pro-micro-space-size [4 10 12]) ; z has no wall;
@@ -619,8 +619,8 @@
    pro-micro-space))
 
 (def trrs-hole-size [8.75 13.5 20]) ; trrs jack PJ-320A
-(def trrs-hole-position-left (map + usb-holder-position [-18.6 0 -2]))
-(def trrs-hole-position-right (map + usb-holder-position [-12.6 0 -2]))
+(def trrs-hole-position-left (map + usb-hole-position [-18.6 0 -2]))
+(def trrs-hole-position-right (map + usb-hole-position [-12.6 0 -2]))
 (def trrs-hole-rect-shift [1.25 -1.75 -2])
 (def trrs-holder-size [2 13 5])
 (def trrs-holder-shift [5.75 0 7])
@@ -736,7 +736,6 @@
                    (difference (union case-walls
                                       screw-insert-outers
                                       pro-micro-holder
-                                      ; usb-holder-holder
                                       )
                                screw-insert-holes))
                   (translate [0 0 -20] (cube 350 350 40))))
@@ -755,10 +754,10 @@
 				(union
 						model-base
 						trrs-holder-left
+	     usb-holder
 				)
 				(union
-						usb-holder-space
-						usb-jack
+						usb-hole
 						trrs-hole-left
 				)))
 
