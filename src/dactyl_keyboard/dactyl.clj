@@ -618,47 +618,59 @@
         (translate [(first pro-micro-position) (second pro-micro-position) (last pro-micro-position)]))
    pro-micro-space))
 
-(def trrs-hole-size [8.75 13.5 20]) ; trrs jack PJ-320A
+(def trrs-hole-board-size [2.25 13.5 20]) ; trrs board groove
+(def trrs-hole-board-shift [3.5 -1.75 -2])
+(def trrs-hole-jackrect-size [5.5 13.5 6.5]) ; trrs box groove surrounding jack cylinder hole
+(def trrs-hole-jackrect-shift [0 -1.75 0])
 (def trrs-hole-position-left (map + usb-hole-position [-18.6 0 -2]))
 (def trrs-hole-position-right (map + usb-hole-position [-12.6 0 -2]))
-(def trrs-hole-rect-shift [1.25 -1.75 -2])
-(def trrs-holder-size [2 13 5])
-(def trrs-holder-shift [5.75 0 7])
+(def trrs-holder-size [2 13 5]) ; holder tray for trrs board
+(def trrs-holder-shift [4.75 0 7])
 (def trrs-holder-thickness 2)
 (def trrs-holder-thickness-2x (* 2 trrs-holder-thickness))
-(defn trrs-holder [position mirror?]
-		(union
-				(->>
-						(cube (+ (first trrs-holder-size) trrs-holder-thickness) (+ (second trrs-holder-size) trrs-holder-thickness-2x) (last trrs-holder-size))
-						(translate trrs-holder-shift)
-						((fn [x] (if mirror? (mirror [-1 0 0] x) x)))
-						(translate [
-								(first position)
-								(- (second position) wall-thickness trrs-holder-thickness)
-								(+ (last position) (/ (+ (last trrs-holder-size) trrs-holder-thickness) 2))]))))
-(defn trrs-holder-hole [position mirror?]
-		(union
-				; circle trrs hole
-				(->>
-						(->> (binding [*fn* 30] (cylinder 2.75 20))) ; 5mm trrs jack
-						(rotate (deg2rad 90) [1 0 0])
-						((fn [x] (if mirror? (mirror [-1 0 0] x) x)))
-						(translate [
-								(first position)
-								(+ (second position) (/ (+ (second trrs-holder-size) trrs-holder-thickness) 2))
-								(+ (last position) 3 (/ (+ (last trrs-holder-size) trrs-holder-thickness) 2))])) ;1.5 padding
-				; rectangular trrs holder
-				(->> (apply cube trrs-hole-size)
-						(translate trrs-hole-rect-shift)
-						((fn [x] (if mirror? (mirror [-1 0 0] x) x)))
-						(translate [
-								(first position)
-								(+ (second position) (/ trrs-holder-thickness -2))
-								(+ (last position) (/ (last trrs-hole-size) 2) trrs-holder-thickness)]))))
-(def trrs-hole-left (trrs-holder-hole trrs-hole-position-left false))
-(def trrs-hole-right (trrs-holder-hole trrs-hole-position-right true))
-(def trrs-holder-left (trrs-holder trrs-hole-position-left false))
-(def trrs-holder-right (trrs-holder trrs-hole-position-right true))
+(defn trrs-hole-cylinder-position [position]
+		[(first position)
+		(+ (second position) (/ trrs-holder-thickness -2))
+		(+ (last position) 3 (/ (+ (last trrs-holder-size) trrs-holder-thickness) 2))])
+(defn trrs-rotate [position angle shape]
+		(let [p (trrs-hole-cylinder-position position)]
+				(->> shape (translate (map - p)) (rotate (deg2rad angle) [0 1 0]) (translate p))))
+(defn trrs-holder [position angle mirror?]
+		(trrs-rotate position angle
+				(union
+						(->>
+								(cube (+ (first trrs-holder-size) trrs-holder-thickness) (+ (second trrs-holder-size) trrs-holder-thickness-2x) (last trrs-holder-size))
+								(translate trrs-holder-shift)
+								((fn [x] (if mirror? (mirror [-1 0 0] x) x)))
+								(translate [
+										(first position)
+										(- (second position) wall-thickness trrs-holder-thickness)
+										(+ (last position) (/ (+ (last trrs-holder-size) trrs-holder-thickness) 2))])))))
+(defn trrs-hole [position angle mirror?]
+		(trrs-rotate position angle
+				(union
+						; trrs jack cylinder hole
+						(->> (->> (binding [*fn* 30] (cylinder 2.75 20)))
+								(rotate (deg2rad 90) [1 0 0])
+								((fn [x] (if mirror? (mirror [-1 0 0] x) x)))
+								(translate (trrs-hole-cylinder-position position)))
+						; trrs box groove surrounding jack cylinder hole
+						(->> (apply cube trrs-hole-jackrect-size)
+								(translate trrs-hole-jackrect-shift)
+								((fn [x] (if mirror? (mirror [-1 0 0] x) x)))
+								(translate (trrs-hole-cylinder-position position)))
+						; trrs board groove
+						(->> (apply cube trrs-hole-board-size)
+								(translate trrs-hole-board-shift)
+								((fn [x] (if mirror? (mirror [-1 0 0] x) x)))
+								(translate [
+										(first position)
+										(+ (second position) (/ trrs-holder-thickness -2))
+										(+ (last position) (/ (last trrs-hole-board-size) 2) trrs-holder-thickness)])))))
+(def trrs-hole-left (trrs-hole trrs-hole-position-left -11.5 false))
+(def trrs-hole-right (trrs-hole trrs-hole-position-right 0 true))
+(def trrs-holder-left (trrs-holder trrs-hole-position-left -11.5 false))
+(def trrs-holder-right (trrs-holder trrs-hole-position-right 0 true))
 
 (defn screw-insert-shape [bottom-radius top-radius height]
   (union
