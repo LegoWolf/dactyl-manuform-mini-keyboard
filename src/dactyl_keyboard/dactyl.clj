@@ -597,13 +597,19 @@
     (thumb-tl-place web-post-tl))))
 
 (def usb-hole-ref (key-position 0 0 (map - (wall-locate2  0  -1) [0 (/ mount-height 2) 0])))
-(def usb-hole-position (map + [22 19.3 0] [(first usb-hole-ref) (second usb-hole-ref) 3]))
-(def usb-hole (union
+(defn usb-hole-position [position] (map + position [(first usb-hole-ref) (second usb-hole-ref) 3]))
+(def usb-hole-position-left (usb-hole-position [22 19.3 0]))
+(def usb-hole-position-right (usb-hole-position [23 19.3 0]))
+(defn usb-hole [position] (union
 		; hole for the jack
-		(translate (map + usb-hole-position [0 10 3]) (cube 9.5 20 4))
+		(translate (map + position [0 10 3]) (cube 9.5 20 4))
 		; groove for the board
-		(translate (map + usb-hole-position [0 (- 0 wall-thickness 0.5) 1]) (cube 26 13 2.1))))
-(def usb-holder (translate (map + [0 (- 0 wall-thickness 2) -0.5] usb-hole-position) (cube 8 15.5 5)))
+		(translate (map + position [0 (- 0 wall-thickness 0.5) 1]) (cube 26 13 2.1))))
+(defn usb-holder [position] (translate (map + [0 (- 0 wall-thickness 2) -0.5] position) (cube 8 15.5 5)))
+(def usb-hole-left (usb-hole usb-hole-position-left))
+(def usb-hole-right (usb-hole usb-hole-position-right))
+(def usb-holder-left (usb-holder usb-hole-position-left))
+(def usb-holder-right (usb-holder usb-hole-position-right))
 
 (def pro-micro-position (map + (key-position 0 1 (wall-locate3 -1 0)) [-6 2 -15]))
 (def pro-micro-space-size [4 10 12]) ; z has no wall;
@@ -622,8 +628,8 @@
 (def trrs-hole-board-shift [3.5 -1.75 -2])
 (def trrs-hole-jackrect-size [5.5 13.5 6.5]) ; trrs box groove surrounding jack cylinder hole
 (def trrs-hole-jackrect-shift [0 -1.75 0])
-(def trrs-hole-position-left (map + usb-hole-position [-18.6 0 -2]))
-(def trrs-hole-position-right (map + usb-hole-position [-12.6 0 -2]))
+(def trrs-hole-position-left (map + usb-hole-position-left [-18.6 0 -2]))
+(def trrs-hole-position-right (map + usb-hole-position-right [-16 0 -2]))
 (def trrs-holder-size [2 13 5]) ; holder tray for trrs board
 (def trrs-holder-shift [4.75 0 7])
 (def trrs-holder-thickness 2)
@@ -757,19 +763,22 @@
 				(union
 						model-base
 						trrs-holder-right
+	     usb-holder-right
 				)
-				trrs-hole-right
-		))
+				(union
+						usb-hole-right
+						trrs-hole-right
+		)))
 
 (def model-left
 		(difference
 				(union
 						model-base
 						trrs-holder-left
-	     usb-holder
+	     usb-holder-left
 				)
 				(union
-						usb-hole
+						usb-hole-left
 						trrs-hole-left
 				)))
 
