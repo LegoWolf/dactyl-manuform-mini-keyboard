@@ -705,11 +705,15 @@
   (union
    (->> (binding [*fn* 30]
           (cylinder [bottom-radius top-radius] height)))
-   (translate [0 0 (/ height 2)] (->> (binding [*fn* 30] (sphere top-radius))))))
+   (translate [0 0 (/ height -2)] (->> (binding [*fn* 30] (sphere top-radius))))))
 
 (defn screw-countersink-shape [bottom-radius top-radius height]
+		(let [sink-height 1.7]
    (->> (binding [*fn* 30]
-   		(translate [0 0 0] (cylinder [bottom-radius top-radius] height)))))
+   		(union
+   				(translate [0 0 (/ (- height sink-height) 2)] (cylinder [bottom-radius top-radius] sink-height))
+   				(translate [0 0 (/ sink-height -2)] (cylinder [bottom-radius bottom-radius] (- height sink-height -0.01)))
+   		)))))
 
 (defn screw-insert [shape column row bottom-radius top-radius height offset]
   (let [shift-right   (= column lastcol)
@@ -734,7 +738,7 @@
 
 ; Hole Depth Y: 4.4
 (def screw-insert-height 7)
-(def screw-countersink-height 2.25)
+(def screw-countersink-height 2.2)
 
 ; Hole Diameter C: 4.1-4.4
 (def screw-insert-bottom-radius (/ 5.3 2))
